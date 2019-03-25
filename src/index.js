@@ -1,29 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ColorClicker from './ColorClicker';
-
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
-import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks';
+import Weather from './Weather';
 
 const cache = new InMemoryCache();
 const client = new ApolloClient({
   cache,
-  resolvers: {}
+  resolvers: {},
+  addTypename: false
 });
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <ApolloHooksProvider client={client}>
-      <ColorClicker client={client} />
-    </ApolloHooksProvider>
+      <Weather />
   </ApolloProvider>,
   document.getElementById('root')
 );
-
-cache.writeData({
-  data: {
-    color: 'blue'
-  }
-});

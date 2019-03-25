@@ -20,22 +20,27 @@ const Result = styled.li`
 
 const FORECAST_QUERY = gql`
   {
-    consolidated_weather @client
+    weather @client {
+      id
+      applicable_date
+    }
   }
 `;
 
 export default function Suggestions({ results, client }) {
   const [clicked, setClicked] = useState(false);
 
-  const handleOnClick = woeid => {
+  const handleOnClick = async woeid => {
     setClicked(false);
-    axios.get(`https://www.metaweather.com/api/location/${woeid}/`).then(
-      ({ data: { consolidated_weather } }) =>
-        client.writeData({
-          data: { consolidated_weather: { ...consolidated_weather } }
-        }),
-      setClicked(true)
+    const {
+      data: { consolidated_weather }
+    } = await axios.get(`https://www.metaweather.com/api/location/${woeid}/`);
+    const dataToWrite = [];
+    consolidated_weather.map(item =>
+      dataToWrite.push({ __typename: 'weather', ...item })
     );
+    client.writeData({ data: { weather: dataToWrite } });
+    setClicked(true);
   };
 
   return (
@@ -47,7 +52,7 @@ export default function Suggestions({ results, client }) {
       ))}
       {clicked && (
         <Query query={FORECAST_QUERY}>
-          {data => <div>Query{console.log(data)}</div>}
+          {({ data }) => <div>Query{console.log(data)}</div>}
         </Query>
       )}
     </Results>

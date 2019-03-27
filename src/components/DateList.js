@@ -5,6 +5,8 @@ import moment from 'moment';
 import Loading from './Loading';
 import Error from './Error';
 import Icon from './Icon';
+import { useQuery } from 'react-apollo-hooks';
+import { DATE_TIME_ICON_QUERY } from '../queries';
 
 const UnstyledList = styled.ul`
   list-style: none;
@@ -17,7 +19,13 @@ const DateWithIcon = styled.li`
 
 const DATE_FORMAT = 'MMMM Do YYYY, h:mm a';
 
-export default function DateList({ loading, error, weather }) {
+export default function DateList() {
+  const {
+    data: { weather },
+    loading,
+    error,
+  } = useQuery(DATE_TIME_ICON_QUERY);
+
   return (
     <Fragment>
       {loading && <Loading />}

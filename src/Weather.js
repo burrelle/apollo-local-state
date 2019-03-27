@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 import DateList from './components/DateList';
-import { DATE_TIME_ICON_QUERY } from './queries';
-import { useQuery, useApolloClient } from 'react-apollo-hooks';
+import { useApolloClient } from 'react-apollo-hooks';
+import Form from './components/Form';
 
-async function fetchData(client) {
+async function fetchData(city, client) {
   const {
     data: { list }
   } = await axios.get(
-    `https://api.openweathermap.org/data/2.5/forecast?q=London,UK&appid=${
+    `https://api.openweathermap.org/data/2.5/forecast?q=${city},UK&appid=${
       process.env.REACT_APP_APIKEY
     }`
   );
@@ -23,15 +23,16 @@ async function fetchData(client) {
 
 export default function Weather() {
   const client = useApolloClient();
-  const {
-    data: { weather },
-    loading,
-    error
-  } = useQuery(DATE_TIME_ICON_QUERY);
+  const [city, setCity] = useState('London');
 
   useEffect(() => {
-    fetchData(client);
+    fetchData(city, client);
   }, []);
 
-  return <DateList weather={weather} loading={loading} error={error} />;
+  return (
+    <Fragment>
+      <Form value={city} setValue={setCity} refetch={fetchData} client={client} />
+      <DateList />
+    </Fragment>
+  );
 }

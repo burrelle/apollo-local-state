@@ -3,7 +3,6 @@ import axios from 'axios';
 import DateList from './components/DateList';
 import { useApolloClient } from 'react-apollo-hooks';
 import ApolloClient from 'apollo-client';
-import { NormalizedCache } from 'apollo-cache-inmemory';
 
 interface IWeather {
   description: string,
@@ -34,7 +33,7 @@ async function fetchData(city: string, client: ApolloClient<object>) {
   client.writeData({ data: { weather: toGraphQL } });
 }
 
-export default function Weather() {
+export default function App() {
   const client = useApolloClient();
   const [city, setCity] = useState('London');
 

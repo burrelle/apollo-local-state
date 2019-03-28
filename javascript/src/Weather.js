@@ -12,7 +12,8 @@ async function fetchData(city, client) {
       process.env.REACT_APP_APIKEY
     }`
   );
-  const toGraphQL = list.map(({ weather, main, dt }, i) => ({
+  const toGraphQL = list.map(({ weather, main, dt }, i) => (
+    {
     __typename: `forecast_item_${i}`,
     dt,
     ...weather[0],
